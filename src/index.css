@@ -1,0 +1,169 @@
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+  font-family: "Amiga Forever", sans-serif;
+}
+
+body {
+  background-color: #003900;
+}
+
+#root {
+  margin-left: 300px;
+}
+
+#title {
+  margin-left: 150px;
+}
+
+.board {
+  border-width: 10px 20px;
+  border-style: solid;
+  display: inline-block;
+}
+
+.field {
+  width: 50px;
+  height: 50px;
+  display: inline;
+  float: left;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.field:nth-child(9n + 1) {
+  clear: both;
+}
+
+.fieldA {
+  background-color: #b5ffad;
+}
+
+.fieldB {
+  background-color: #94de8c;
+}
+
+.fieldC {
+  background-color: #529c4a;
+}
+
+.fieldD {
+  background-color: #317b29;
+}
+
+.fieldE {
+  background-color: #003900;
+}
+
+.fieldF {
+  background-color: #010901;
+}
+
+img {
+  background-color: transparent;
+}
+
+.cursor {
+  position: absolute;
+  width: 70px;
+  height: 70px;
+  border: 10px solid;
+  background: transparent;
+  transition: top 0.2s linear, left 0.2s linear;
+  z-index: 6;
+}
+
+h2 {
+  color: #b5ffad;
+}
+
+.character {
+  position: absolute;
+  z-index: 5;
+  transition: top 0.2s linear, left 0.2s linear;
+}
+
+.hoverDiv {
+  position: absolute;
+  z-index: 2;
+}
+
+.target {
+  z-index: 4;
+}
+
+.fightingCharacterPrepareToBattle {
+  position: absolute;
+  z-index: 11;
+  transition: top 1s linear, left 1s linear;
+}
+
+.battleArena {
+  position: absolute;
+  display: inline;
+  z-index: 8;
+  transition: top 1s linear, left 1s linear, width 1s linear, height 1s linear;
+  padding: 50px 5px;
+}
+
+.elementsOfBattleArena {
+  float: left;
+  margin: 5px;
+}
+
+.plant {
+  position: absolute;
+  z-index: 10;
+}
+
+.fightingCharacters {
+  position: absolute;
+  z-index: 11;
+  transition: top 50ms linear, left 50ms linear;
+}
+
+.bullet {
+  z-index: 10;
+  position: absolute;
+}
+
+.cloudAttack {
+  position: absolute;
+  z-index: 10;
+}
+
+.deadCharacterDiv {
+  position: absolute;
+  display: flex;
+  flex-direction: column;
+  width: 48px;
+}
+
+.button {
+  width: 200px;
+  height: 100px;
+}
+
+.header {
+  margin-top: 150px;
+}
+
+.controller {
+  display: flex;
+  flex-direction: row;
+}
+
+.startingCommunicat {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+}
+
+.controlSingleDiv{
+  border: 2px solid black;
+  padding: 1rem;
+  margin: 1rem;
+}
