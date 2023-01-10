@@ -1,5 +1,5 @@
 <h1>Archon the light and the dark</h1>
-<p>Port made in typescript<br/> link to orginal game on Atari 8 bit family: https://en.wikipedia.org/wiki/Archon:_The_Light_and_the_Dark  </p>
+<p>Port was made in typescript and using vite<br/> link to orginal game on Atari 8 bit family: https://en.wikipedia.org/wiki/Archon:_The_Light_and_the_Dark  </p>
 
 <p>In game you can play against other player on local computer or against AI</p>
 
