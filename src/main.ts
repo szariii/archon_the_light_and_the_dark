@@ -1,4 +1,5 @@
 import Game from ".";
+import CreateBoard from "./components/createBoard";
 
 class Intro {
   rootDiv = document.getElementById("root") as HTMLDivElement;
@@ -82,7 +83,11 @@ class Intro {
 
     const title = document.getElementById("title") as HTMLHeadingElement;
     title.style.display = "block";
-    new Game(this.playerOptions.index, this.startingSide.index, true);
+    //new Game(this.playerOptions.index, this.startingSide.index, true);
+    const createBoard = new CreateBoard(9,9,0,1)
+    createBoard.renderPlayground()
+    createBoard.renderCharactersOnPlayground()
+    
 
     const playersOptions = document.createElement("h2");
     playersOptions.innerText = `Arrow up:  ${this.playerOptions.text}`;

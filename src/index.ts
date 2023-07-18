@@ -1,4 +1,25 @@
-import arrayWithCharactersStats from "./arrayWithCharactersStats";
+import arrayWithCharactersStats from "./data/arrayWithCharactersStats";
+import {
+  Color,
+  Position,
+  Character,
+  OffsetField,
+  KeysInformations,
+  IntervalInformations,
+  AudioInformation,
+  SpellInformation,
+  FightingCharactersTypes,
+  FieldColorInforamtion,
+  HpFightinfo,
+  PlantsPlaces,
+  CurrentCharacterSpellsInfo,
+  KeyLoggerShortcut,
+  MoveCounter,
+  DeadCharacter,
+  PositionOfDemagePoints,
+} from "./interfaces";
+
+import CreateBoard from "./components/createBoard";
 
 class Game implements Game {
   //Playground height
@@ -442,8 +463,25 @@ class Game implements Game {
   startGame(onlyPlayground: boolean) {
     this.arrayWithCurrentInformationsAboutCharacters =
       this.arrayWithInformationsAboutCharakters.slice();
-    this.renderPlayground();
-    this.renderCharactersOnPlayground();
+    
+      const createBoard = new CreateBoard(this.playgroundHeight,this.playgroundWidth,this.movingSide,this.startingSide)
+    //this.renderPlayground();
+    //this.renderCharactersOnPlayground();
+    const playgroundData = createBoard.renderPlayground()
+    this.colorsChangingArrayIndex=playgroundData.colorsChangingArrayIndex
+    this.sideOfChangingColor=playgroundData.sideOfChangingColor
+    this.changingFieldsPosition=playgroundData.changingFieldsPosition
+    this.darkFiledsPositions=playgroundData.darkFiledsPositions
+    this.lightFiledsPositions=playgroundData.lightFiledsPositions
+    this.arrayWithChangingColorFields=playgroundData.arrayWithChangingColorFields
+    this.arrayWithColorsOfFields=playgroundData.arrayWithColorsOfFields
+
+    const characterData =createBoard.renderCharactersOnPlayground()
+    console.log(characterData)
+    this.yellowCharactersIds=characterData.yellowCharactersIds
+    this.blueCharactersIds=characterData.blueCharactersIds
+    this.arrayWithCurrentInformationsAboutCharacters=characterData.arrayWithCurrentInformationsAboutCharacters
+
     if (onlyPlayground === false) {
       this.createCursor();
     }
@@ -8907,7 +8945,6 @@ class Game implements Game {
     useMagic: boolean,
     whichTime: number
   ) {
-
     if (
       (e.code === "ArrowLeft" ||
         e.code === "ArrowUp" ||
@@ -9791,194 +9828,148 @@ class Game implements Game {
     });
   }
 
-  renderCharactersOnPlayground() {
-    const firstFieldDiv: HTMLDivElement = document.getElementById(
-      `0_0`
-    ) as HTMLDivElement;
+  // renderPlayground() {
+  //   const playground: HTMLDivElement = document.createElement("div");
+  //   playground.id = "playground";
+  //   playground.classList.add("playground");
+  //   const title: HTMLHeadingElement = document.getElementById(
+  //     "title"
+  //   ) as HTMLHeadingElement;
+  //   const board: HTMLDivElement = document.createElement(
+  //     "div"
+  //   ) as HTMLDivElement;
+  //   board.id = "board";
+  //   if (this.movingSide === 0) {
+  //     board.style.borderColor = this.sidesColor.yellow;
+  //     title.style.color = this.sidesColor.yellow;
+  //   } else {
+  //     board.style.borderColor = this.sidesColor.blue;
+  //     title.style.color = this.sidesColor.blue;
+  //   }
 
-    for (let i: number = 0; i < this.playgroundHeight; i++) {
-      for (let j: number = 0; j < this.playgroundWidth; j++) {
-        if (this.arrayWithPlacesOfCharacters[i][j].length !== 0) {
-          const characterImage: HTMLImageElement =
-            document.createElement("img");
-          characterImage.classList.add("character");
-          characterImage.width = 48;
-          characterImage.height = 48;
-          const id: number = this.arrayWithPlacesOfCharacters[i][j][0];
-          const informationsAboutCharacter: Character =
-            this.arrayWithInformationsAboutCharakters.filter(
-              (info) => info.id === id
-            )[0];
+  //   board.classList.add("board");
+  //   for (let i: number = 0; i < this.playgroundHeight; i++) {
+  //     for (let j: number = 0; j < this.playgroundWidth; j++) {
+  //       const createFieldDiv = document.createElement("div");
+  //       createFieldDiv.classList.add("field");
+  //       createFieldDiv.id = `${i}_${j}`;
 
-          if (informationsAboutCharacter.side === 0) {
-            this.yellowCharactersIds.push(informationsAboutCharacter.id);
-          } else {
-            this.blueCharactersIds.push(informationsAboutCharacter.id);
-          }
-          this.arrayWithCurrentInformationsAboutCharacters =
-            this.arrayWithCurrentInformationsAboutCharacters.map((info) =>
-              info.id === id
-                ? { ...info, positionI: i, positionJ: j }
-                : { ...info }
-            );
-          characterImage.style.left = `${
-            firstFieldDiv.offsetLeft + 1 + j * 50
-          }px`;
+  //       if (
+  //         (i === 0 && j === 0) ||
+  //         (i === 0 && j === 2) ||
+  //         (i === 0 && j === 7) ||
+  //         (i === 1 && j === 1) ||
+  //         (i === 1 && j === 5) ||
+  //         (i === 1 && j === 8) ||
+  //         (i === 2 && j === 0) ||
+  //         (i === 2 && j === 3) ||
+  //         (i === 2 && j === 6) ||
+  //         (i === 3 && j === 2) ||
+  //         (i === 3 && j === 5) ||
+  //         (i === 3 && j === 7) ||
+  //         (i === 4 && j === 8) ||
+  //         (i === 5 && j === 2) ||
+  //         (i === 5 && j === 5) ||
+  //         (i === 5 && j === 7) ||
+  //         (i === 6 && j === 0) ||
+  //         (i === 6 && j === 3) ||
+  //         (i === 6 && j === 6) ||
+  //         (i === 7 && j === 1) ||
+  //         (i === 7 && j === 5) ||
+  //         (i === 7 && j === 8) ||
+  //         (i === 8 && j === 0) ||
+  //         (i === 8 && j === 2) ||
+  //         (i === 8 && j === 7)
+  //       ) {
+  //         this.arrayWithColorsOfFields[i][j] = "F";
+  //         createFieldDiv.classList.add("fieldF");
+  //         this.darkFiledsPositions.push({ i: i, j: j });
+  //       } else if (
+  //         (i === 0 && j === 1) ||
+  //         (i === 0 && j === 6) ||
+  //         (i === 0 && j === 8) ||
+  //         (i === 1 && j === 0) ||
+  //         (i === 1 && j === 3) ||
+  //         (i === 1 && j === 7) ||
+  //         (i === 2 && j === 2) ||
+  //         (i === 2 && j === 5) ||
+  //         (i === 2 && j === 8) ||
+  //         (i === 3 && j === 1) ||
+  //         (i === 3 && j === 3) ||
+  //         (i === 3 && j === 6) ||
+  //         (i === 4 && j === 0) ||
+  //         (i === 5 && j === 1) ||
+  //         (i === 5 && j === 3) ||
+  //         (i === 5 && j === 6) ||
+  //         (i === 6 && j === 2) ||
+  //         (i === 6 && j === 5) ||
+  //         (i === 6 && j === 8) ||
+  //         (i === 7 && j === 0) ||
+  //         (i === 7 && j === 3) ||
+  //         (i === 7 && j === 7) ||
+  //         (i === 8 && j === 1) ||
+  //         (i === 8 && j === 6) ||
+  //         (i === 8 && j === 8)
+  //       ) {
+  //         this.arrayWithColorsOfFields[i][j] = "A";
+  //         createFieldDiv.classList.add("fieldA");
+  //         this.lightFiledsPositions.push({ i: i, j: j });
+  //       } else {
+  //         this.arrayWithChangingColorFields.push(createFieldDiv);
+  //         this.changingFieldsPosition.push({ i: i, j: j });
+  //         if (this.startingSide === 0) {
+  //           this.arrayWithColorsOfFields[i][j] = "D";
+  //           createFieldDiv.classList.add("fieldD");
+  //           this.sideOfChangingColor = 1;
+  //           this.colorsChangingArrayIndex = 3;
+  //         } else {
+  //           this.arrayWithColorsOfFields[i][j] = "C";
+  //           createFieldDiv.classList.add("fieldC");
+  //           this.sideOfChangingColor = -1;
+  //           this.colorsChangingArrayIndex = 2;
+  //         }
+  //       }
 
-          characterImage.style.top = `${
-            firstFieldDiv.offsetTop + 1 + i * 50
-          }px`;
+  //       if (
+  //         (i === 0 && j === 4) ||
+  //         (i === 4 && j === 0) ||
+  //         (i === 4 && j === 4) ||
+  //         (i === 4 && j === 8) ||
+  //         (i === 8 && j === 4)
+  //       ) {
+  //         const targetImg: HTMLImageElement = document.createElement("img");
+  //         targetImg.src = "./src/src/target.png";
+  //         targetImg.classList.add("target");
+  //         targetImg.width = 30;
+  //         targetImg.height = 30;
+  //         createFieldDiv.appendChild(targetImg);
+  //       }
+  //       board.appendChild(createFieldDiv);
+  //     }
+  //   }
 
-          characterImage.id = id.toString();
-          characterImage.src = `./src/src/${informationsAboutCharacter.type}/logo.png`;
-          this.rootDiv.appendChild(characterImage);
-        }
-      }
-    }
-  }
+  //   let index: number = 0;
+  //   setInterval(() => {
+  //     const divsToChange: HTMLCollectionOf<HTMLImageElement> =
+  //       document.getElementsByClassName(
+  //         "target"
+  //       ) as HTMLCollectionOf<HTMLImageElement>;
+  //     if (index % 2 === 0) {
+  //       for (let i = 0; i < divsToChange.length; i++) {
+  //         divsToChange[i].style.display = "inline";
+  //       }
+  //     } else {
+  //       for (let i = 0; i < divsToChange.length; i++) {
+  //         divsToChange[i].style.display = "none";
+  //       }
+  //     }
 
-  renderPlayground() {
-    const playground: HTMLDivElement = document.createElement("div");
-    playground.id = "playground";
-    playground.classList.add("playground");
-    const title: HTMLHeadingElement = document.getElementById(
-      "title"
-    ) as HTMLHeadingElement;
-    const board: HTMLDivElement = document.createElement(
-      "div"
-    ) as HTMLDivElement;
-    board.id = "board";
-    if (this.movingSide === 0) {
-      board.style.borderColor = this.sidesColor.yellow;
-      title.style.color = this.sidesColor.yellow;
-    } else {
-      board.style.borderColor = this.sidesColor.blue;
-      title.style.color = this.sidesColor.blue;
-    }
+  //     index++;
+  //   }, 10);
 
-    board.classList.add("board");
-    for (let i: number = 0; i < this.playgroundHeight; i++) {
-      for (let j: number = 0; j < this.playgroundWidth; j++) {
-        const createFieldDiv = document.createElement("div");
-        createFieldDiv.classList.add("field");
-        createFieldDiv.id = `${i}_${j}`;
-
-        if (
-          (i === 0 && j === 0) ||
-          (i === 0 && j === 2) ||
-          (i === 0 && j === 7) ||
-          (i === 1 && j === 1) ||
-          (i === 1 && j === 5) ||
-          (i === 1 && j === 8) ||
-          (i === 2 && j === 0) ||
-          (i === 2 && j === 3) ||
-          (i === 2 && j === 6) ||
-          (i === 3 && j === 2) ||
-          (i === 3 && j === 5) ||
-          (i === 3 && j === 7) ||
-          (i === 4 && j === 8) ||
-          (i === 5 && j === 2) ||
-          (i === 5 && j === 5) ||
-          (i === 5 && j === 7) ||
-          (i === 6 && j === 0) ||
-          (i === 6 && j === 3) ||
-          (i === 6 && j === 6) ||
-          (i === 7 && j === 1) ||
-          (i === 7 && j === 5) ||
-          (i === 7 && j === 8) ||
-          (i === 8 && j === 0) ||
-          (i === 8 && j === 2) ||
-          (i === 8 && j === 7)
-        ) {
-          this.arrayWithColorsOfFields[i][j] = "F";
-          createFieldDiv.classList.add("fieldF");
-          this.darkFiledsPositions.push({ i: i, j: j });
-        } else if (
-          (i === 0 && j === 1) ||
-          (i === 0 && j === 6) ||
-          (i === 0 && j === 8) ||
-          (i === 1 && j === 0) ||
-          (i === 1 && j === 3) ||
-          (i === 1 && j === 7) ||
-          (i === 2 && j === 2) ||
-          (i === 2 && j === 5) ||
-          (i === 2 && j === 8) ||
-          (i === 3 && j === 1) ||
-          (i === 3 && j === 3) ||
-          (i === 3 && j === 6) ||
-          (i === 4 && j === 0) ||
-          (i === 5 && j === 1) ||
-          (i === 5 && j === 3) ||
-          (i === 5 && j === 6) ||
-          (i === 6 && j === 2) ||
-          (i === 6 && j === 5) ||
-          (i === 6 && j === 8) ||
-          (i === 7 && j === 0) ||
-          (i === 7 && j === 3) ||
-          (i === 7 && j === 7) ||
-          (i === 8 && j === 1) ||
-          (i === 8 && j === 6) ||
-          (i === 8 && j === 8)
-        ) {
-          this.arrayWithColorsOfFields[i][j] = "A";
-          createFieldDiv.classList.add("fieldA");
-          this.lightFiledsPositions.push({ i: i, j: j });
-        } else {
-          this.arrayWithChangingColorFields.push(createFieldDiv);
-          this.changingFieldsPosition.push({ i: i, j: j });
-          if (this.startingSide === 0) {
-            this.arrayWithColorsOfFields[i][j] = "D";
-            createFieldDiv.classList.add("fieldD");
-            this.sideOfChangingColor = 1;
-            this.colorsChangingArrayIndex = 3;
-          } else {
-            this.arrayWithColorsOfFields[i][j] = "C";
-            createFieldDiv.classList.add("fieldC");
-            this.sideOfChangingColor = -1;
-            this.colorsChangingArrayIndex = 2;
-          }
-        }
-
-        if (
-          (i === 0 && j === 4) ||
-          (i === 4 && j === 0) ||
-          (i === 4 && j === 4) ||
-          (i === 4 && j === 8) ||
-          (i === 8 && j === 4)
-        ) {
-          const targetImg: HTMLImageElement = document.createElement("img");
-          targetImg.src = "./src/src/target.png";
-          targetImg.classList.add("target");
-          targetImg.width = 30;
-          targetImg.height = 30;
-          createFieldDiv.appendChild(targetImg);
-        }
-        board.appendChild(createFieldDiv);
-      }
-    }
-
-    let index: number = 0;
-    setInterval(() => {
-      const divsToChange: HTMLCollectionOf<HTMLImageElement> =
-        document.getElementsByClassName(
-          "target"
-        ) as HTMLCollectionOf<HTMLImageElement>;
-      if (index % 2 === 0) {
-        for (let i = 0; i < divsToChange.length; i++) {
-          divsToChange[i].style.display = "inline";
-        }
-      } else {
-        for (let i = 0; i < divsToChange.length; i++) {
-          divsToChange[i].style.display = "none";
-        }
-      }
-
-      index++;
-    }, 10);
-
-    playground.appendChild(board);
-    this.rootDiv.appendChild(playground);
-  }
+  //   playground.appendChild(board);
+  //   this.rootDiv.appendChild(playground);
+  // }
 
   //Random int number from range
   getRandomInt = (min: number, max: number) => {
@@ -9991,116 +9982,6 @@ class Game implements Game {
     arrayWithCharactersStats;
 
   arrayWithCurrentInformationsAboutCharacters: Array<Character> = [];
-}
-
-interface Character {
-  id: number;
-  type: string;
-  moves: number;
-  typeOfMoves: string;
-  HP: number;
-  speed: number;
-  attackPower: number;
-  attackRate: number;
-  photo: string;
-  side: number;
-  shotSpeed?: number;
-  horizontalWidthAttack?: number;
-  verticalWidthAttack?: number;
-  horizontalMinWidth?: number;
-  verticalMinWidth?: number;
-  positionI?: number;
-  positionJ?: number;
-}
-
-interface KeyLoggerShortcut {
-  down: string;
-  up: string;
-  right: string;
-  left: string;
-  attack: string;
-}
-
-interface Position {
-  i: number;
-  j: number;
-}
-
-interface Color {
-  yellow: string;
-  blue: string;
-}
-
-interface OffsetField {
-  x: number;
-  y: number;
-}
-
-interface KeysInformations {
-  key: string;
-  clicked: boolean;
-}
-
-interface IntervalInformations {
-  name: string;
-  id: number;
-  movingSide?: string;
-}
-
-interface AudioInformation {
-  name: string;
-  htmlElement: HTMLAudioElement;
-}
-
-interface FightingCharactersTypes {
-  yellow: Character;
-  blue: Character;
-}
-
-interface FieldColorInforamtion {
-  color: string;
-  bonusYellow: number;
-  bonusBlue: number;
-}
-
-interface HpFightinfo {
-  yellow: number;
-  blue: number;
-}
-
-interface PlantsPlaces {
-  id: number;
-  x: number;
-  y: number;
-  phase: number;
-}
-
-interface PositionOfDemagePoints {
-  x: number;
-  y: number;
-}
-
-interface SpellInformation {
-  id: number;
-  name: string;
-  function: Function;
-}
-
-interface CurrentCharacterSpellsInfo {
-  index: number;
-  spellsArray: Array<SpellInformation>;
-  maxValue: number;
-}
-
-interface DeadCharacter {
-  index: number;
-  character: Character;
-}
-
-interface MoveCounter {
-  i: number;
-  j: number;
-  indexNumber: number;
 }
 
 interface Game {
